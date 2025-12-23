@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Acción: Servicios de llantas por vehículo -->
+    <record id="fleet_vehicle_tire_service_action" model="ir.actions.act_window">
+        <field name="name">Servicios de Llantas</field>
+        <field name="res_model">fleet.maintenance.tire.service</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('vehicle_id', '=', active_id)]</field>
+        <field name="context">{'default_vehicle_id': active_id}</field>
+    </record>
+
+        <!-- Botón de Llantas en el vehículo -->
+    <record id="fleet_vehicle_form_inherit_tire_button" model="ir.ui.view">
+        <field name="name">fleet.vehicle.form.inherit.tire.button</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Insertamos el botón en la zona de stat buttons -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+
+                <button
+                    name="%(fleet_maintenance_extended.fleet_vehicle_tire_service_action)d"
+                    type="action"
+                    class="oe_stat_button"
+                    icon="fa-circle-o"
+                    string="Llantas">
+
+                    <field name="tire_service_count"
+                           widget="statinfo"
+                           string="Llantas"/>
+
+                </button>
+
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

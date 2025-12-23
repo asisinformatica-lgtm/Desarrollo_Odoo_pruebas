@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_tire_position,fleet_maintenance_tire_position,model_fleet_maintenance_tire_position,,1,1,1,1
+access_tire_service,fleet_maintenance_tire_service,model_fleet_maintenance_tire_service,,1,1,1,1
+access_tire_service_line,fleet_maintenance_tire_service_line,model_fleet_maintenance_tire_service_line,,1,1,1,1
+access_tire_service_line_wizard,fleet_maintenance_tire_service_line_wizard,model_fleet_maintenance_tire_service_line_wizard,,1,1,1,1

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Acción para abrir el wizard -->
+    <record id="action_open_tire_service_line_wizard" model="ir.actions.act_window">
+        <field name="name">Crear líneas de reparación</field>
+        <field name="res_model">fleet.maintenance.tire.service.line.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_tire_service_line_wizard_form"/>
+        <field name="target">new</field>
+        <field name="context">
+            {
+                'default_service_id': active_id
+            }
+        </field>
+    </record>
+
+</odoo>
