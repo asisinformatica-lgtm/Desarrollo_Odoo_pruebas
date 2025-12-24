@@ -15,3 +15,4 @@ class FleetVehicle(models.Model):
             vehicle.tire_service_count = service_model.search_count([
                 ("vehicle_id", "=", vehicle.id)
             ])
+#test
