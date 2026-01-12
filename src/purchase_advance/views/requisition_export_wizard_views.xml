@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_requisition_export_wizard_form" model="ir.ui.view">
+        <field name="name">purchase.advance.export.wizard.form</field>
+        <field name="model">purchase.advance.export.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Exportar Requisiciones">
+                <group>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                </group>
+
+                <footer>
+                    <button name="action_export_excel"
+                            type="object"
+                            string="Exportar a Excel"
+                            class="btn-primary"/>
+
+                    <button string="Cerrar"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+
+                <group attrs="{'invisible': [('file_data', '=', False)]}">
+                    <field name="file_name" readonly="1"/>
+                    <field name="file_data" filename="file_name" readonly="1"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+</odoo>

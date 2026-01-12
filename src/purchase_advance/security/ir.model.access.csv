@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_purchase_advance_requester,Requisiciones Solicitante,model_purchase_advance,group_purchase_advance_requester,1,1,1,1
+access_purchase_advance_line_requester,Requisiciones Líneas Solicitante,model_purchase_advance_line,group_purchase_advance_requester,1,1,1,1
+
+access_purchase_advance_approver,Requisiciones Aprobador,model_purchase_advance,group_purchase_advance_approver,1,1,1,1
+access_purchase_advance_line_approver,Requisiciones Líneas Aprobador,model_purchase_advance_line,group_purchase_advance_approver,1,1,1,1
+
+access_purchase_advance_accounting,Requisiciones Contabilidad,model_purchase_advance,group_purchase_advance_accounting,1,1,1,1
+access_purchase_advance_line_accounting,Requisiciones Líneas Contabilidad,model_purchase_advance_line,group_purchase_advance_accounting,1,1,1,1

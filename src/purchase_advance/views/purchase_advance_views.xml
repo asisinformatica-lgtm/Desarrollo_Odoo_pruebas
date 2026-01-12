@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ========================= -->
+    <!-- LISTA -->
+    <!-- ========================= -->
+    <record id="view_purchase_advance_list" model="ir.ui.view">
+        <field name="name">purchase.advance.list</field>
+        <field name="model">purchase.advance</field>
+        <field name="arch" type="xml">
+            <list
+                decoration-success="state == 'approved'"
+                decoration-danger="state == 'rejected'"
+                decoration-info="state == 'sent'"
+            >
+                <field name="name"/>
+                <field name="date_request"/>
+                <field name="approver_department_id" string="Departamento"/>
+                <field name="requester_id"/>
+                <field name="state"/>
+                <field name="amount_total"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ========================= -->
+    <!-- FORMULARIO -->
+    <!-- ========================= -->
+    <record id="view_purchase_advance_form" model="ir.ui.view">
+        <field name="name">purchase.advance.form</field>
+        <field name="model">purchase.advance</field>
+        <field name="arch" type="xml">
+            <form>
+
+                <!-- ========================= -->
+                <!-- CABECERA -->
+                <!-- ========================= -->
+                <header>
+
+                    <!-- ENVIAR: SOLO SOLICITANTE + BORRADOR -->
+                    <button name="action_send"
+                            type="object"
+                            string="Enviar"
+                            class="btn-primary"
+                            groups="purchase_advance.group_purchase_advance_requester"
+                            invisible="state != 'draft'"/>
+
+                    <!-- APROBAR: SOLO APROBADOR + ENVIADA -->
+                    <button name="action_approve"
+                            type="object"
+                            string="Aprobar"
+                            class="btn-success"
+                            groups="purchase_advance.group_purchase_advance_approver"
+                            invisible="state != 'sent'"/>
+
+                    <!-- RECHAZAR: SOLO APROBADOR + ENVIADA -->
+                    <button name="action_reject"
+                            type="object"
+                            string="Rechazar"
+                            class="btn-danger"
+                            groups="purchase_advance.group_purchase_advance_approver"
+                            invisible="state != 'sent'"/>
+
+                    <!-- LIQUIDAR: CONTABILIDAD -->
+                    <button name="action_liquidate"
+                            type="object"
+                            string="Liquidar"
+                            groups="purchase_advance.group_purchase_advance_accounting"
+                            invisible="state != 'approved'"/>
+
+                    <field name="state" widget="statusbar"/>
+                </header>
+
+                <sheet>
+
+                    <field name="currency_id" invisible="1"/>
+
+                    <!-- ========================= -->
+                    <!-- DATOS GENERALES -->
+                    <!-- ========================= -->
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="date_request"/>
+                            <field name="reason"/>
+                        </group>
+
+                        <group>
+                            <field name="requester_id" invisible="1"/>
+
+                            <field name="requester_email"
+                                   string="Correo"
+                                   readonly="1"/>
+
+                            <field name="approver_employee_id"
+                                   string="Aprobador"/>
+
+                            <field name="approver_email"
+                                   string="Correo"
+                                   readonly="1"/>
+
+                            <field name="approver_department_id"
+                                   string="Departamento"
+                                   readonly="1"/>
+                        </group>
+                    </group>
+
+                    <!-- ========================= -->
+                    <!-- DETALLE -->
+                    <!-- ========================= -->
+                    <notebook>
+
+                        <page string="Detalle de la Requisición">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="partner_id"/>
+                                    <field name="quantity"/>
+                                    <field name="price_unit"/>
+                                    <field name="tax_ids" widget="many2many_tags"/>
+                                    <field name="subtotal"/>
+                                    <field name="total"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- ========================= -->
+                        <!-- LIQUIDACIÓN -->
+                        <!-- ========================= -->
+                        <page string="Liquidación"
+                              groups="purchase_advance.group_purchase_advance_accounting">
+                            <group>
+                                <field name="liquidation_type"/>
+                            </group>
+                            <group string="Documentos">
+                                <field name="invoice_attachment_id"/>
+                                <field name="xml_attachment_id"/>
+                            </group>
+                        </page>
+
+                        <!-- ========================= -->
+                        <!-- TRAZABILIDAD -->
+                        <!-- ========================= -->
+                        <page string="Trazabilidad">
+                            <group string="Envío">
+                                <field name="sent_by_id" readonly="1"/>
+                                <field name="sent_date" readonly="1"/>
+                            </group>
+                            <group string="Aprobación">
+                                <field name="approved_by_id" readonly="1"/>
+                                <field name="approved_date" readonly="1"/>
+                            </group>
+                            <group string="Rechazo">
+                                <field name="rejected_by_id" readonly="1"/>
+                                <field name="rejected_date" readonly="1"/>
+                            </group>
+                            <group string="Liquidación">
+                                <field name="liquidated_by_id" readonly="1"/>
+                                <field name="liquidated_date" readonly="1"/>
+                            </group>
+                        </page>
+
+                    </notebook>
+
+                    <group>
+                        <field name="amount_total" readonly="1"/>
+                    </group>
+
+                </sheet>
+
+                <chatter/>
+
+            </form>
+        </field>
+    </record>
+
+    <!-- ========================= -->
+    <!-- ACCIÓN -->
+    <!-- ========================= -->
+    <record id="action_purchase_advance" model="ir.actions.act_window">
+        <field name="name">Requisiciones</field>
+        <field name="res_model">purchase.advance</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">
+            {'delete': True, 'duplicate': True}
+        </field>
+    </record>
+
+</odoo>

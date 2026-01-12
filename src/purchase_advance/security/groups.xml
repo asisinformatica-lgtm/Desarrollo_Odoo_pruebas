@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- SOLICITANTE -->
+    <record id="group_purchase_advance_requester" model="res.groups">
+        <field name="name">Requisiciones - Solicitante</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+    </record>
+
+    <!-- APROBADOR -->
+    <record id="group_purchase_advance_approver" model="res.groups">
+        <field name="name">Requisiciones - Aprobador</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+    </record>
+
+    <!-- CONTABILIDAD -->
+    <record id="group_purchase_advance_accounting" model="res.groups">
+        <field name="name">Requisiciones - Contabilidad</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+    </record>
+
+    <!-- ADMINISTRADOR -->
+    <record id="group_purchase_advance_admin" model="res.groups">
+        <field name="name">Requisiciones - Administrador</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+        <field name="implied_ids"
+               eval="[
+                   (4, ref('group_purchase_advance_requester')),
+                   (4, ref('group_purchase_advance_approver')),
+                   (4, ref('group_purchase_advance_accounting'))
+               ]"/>
+    </record>
+
+</odoo>

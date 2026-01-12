@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================================================
+         CORREO: REQUISICIÓN PENDIENTE DE APROBACIÓN
+         ================================================== -->
+    <record id="mail_template_purchase_advance_to_approve" model="mail.template">
+        <field name="name">Requisición pendiente de aprobación</field>
+        <field name="model_id" ref="model_purchase_advance"/>
+
+        <!-- SUBJECT: UNA SOLA LÍNEA -->
+        <field name="subject">
+            Requisición {{ object.name }} pendiente de aprobación
+        </field>
+
+        <!-- EMAIL FROM (limpio y seguro) -->
+        <field name="email_from">
+            {{ (user.email or company.email or 'no-reply@caribbeanport.com.gt')
+               .replace('\n','')
+               .replace('\r','')
+               .strip() }}
+        </field>
+
+        <!-- EMAIL TO (limpio y seguro) -->
+        <field name="email_to">
+            {{ (object.approver_employee_id.work_email or '')
+               .replace('\n','')
+               .replace('\r','')
+               .strip() }}
+        </field>
+
+        <!-- REPLY TO (definido explícitamente) -->
+        <field name="reply_to">
+            {{ (user.email or company.email or 'no-reply@caribbeanport.com.gt')
+               .replace('\n','')
+               .replace('\r','')
+               .strip() }}
+        </field>
+
+        <!-- Evita chatter y basura -->
+        <field name="use_default_to" eval="False"/>
+        <field name="auto_delete" eval="True"/>
+
+        <!-- CUERPO DEL CORREO -->
+        <field name="body_html">
+            <![CDATA[
+            <div style="font-family: Arial, sans-serif; font-size: 14px;">
+                <p>Estimado(a),</p>
+
+                <p>
+                    Se ha enviado la requisición
+                    <strong>{{ object.name }}</strong>
+                    para su aprobación.
+                </p>
+
+                <ul>
+                    <li><strong>Solicitante:</strong> {{ object.requester_id.name }}</li>
+                    <li><strong>Departamento:</strong> {{ object.approver_department_id.name or '' }}</li>
+                    <li><strong>Fecha:</strong> {{ object.date_request }}</li>
+                    <li>
+                        <strong>Monto total:</strong>
+                        {{ object.amount_total }} {{ object.currency_id.name }}
+                    </li>
+                </ul>
+
+                <p>
+                    Por favor revise la requisición en Odoo.
+                </p>
+
+                <p style="margin-top:20px;">
+                    <a href="{{ object.get_portal_url() }}"
+                       style="
+                           background:#875A7B;
+                           color:#fff;
+                           padding:10px 18px;
+                           text-decoration:none;
+                           border-radius:4px;
+                       ">
+                        Revisar requisición
+                    </a>
+                </p>
+            </div>
+            ]]>
+        </field>
+    </record>
+
+</odoo>

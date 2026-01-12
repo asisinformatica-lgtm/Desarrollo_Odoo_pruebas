@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_export_requisition_excel_form" model="ir.ui.view">
+        <field name="name">export.requisition.excel.form</field>
+        <field name="model">purchase.advance.export.excel</field>
+        <field name="arch" type="xml">
+            <form string="Exportar Requisiciones a Excel">
+                <group>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                </group>
+
+                <footer>
+                    <button name="action_export"
+                            type="object"
+                            string="Exportar"
+                            class="btn-primary"/>
+                    <button string="Cerrar" class="btn-secondary" special="cancel"/>
+                </footer>
+
+                <group attrs="{'invisible': [('file_data', '=', False)]}">
+                    <field name="file_data" filename="file_name"/>
+                    <field name="file_name" invisible="1"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_export_requisition_excel" model="ir.actions.act_window">
+        <field name="name">Exportar Requisiciones</field>
+        <field name="res_model">purchase.advance.export.excel</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="groups_id"
+               eval="[(4, ref('purchase_advance.group_purchase_advance_accounting'))]"/>
+    </record>
+
+    <menuitem id="menu_export_requisition_excel"
+              name="Exportar a Excel"
+              parent="menu_purchase_advance_finance_root"
+              action="action_export_requisition_excel"
+              sequence="30"/>
+
+</odoo>

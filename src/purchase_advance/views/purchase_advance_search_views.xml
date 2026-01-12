@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_purchase_advance_search" model="ir.ui.view">
+        <field name="name">purchase.advance.search</field>
+        <field name="model">purchase.advance</field>
+        <field name="arch" type="xml">
+            <search>
+
+                <!-- ========================= -->
+                <!-- CAMPOS -->
+                <!-- ========================= -->
+                <field name="name"/>
+                <field name="requester_id"/>
+                <field name="approver_employee_id"/>
+                <field name="date_request"/>
+                <field name="state"/>
+
+                <!-- ========================= -->
+                <!-- ESTADOS -->
+                <!-- ========================= -->
+                <filter name="filter_sent"
+                        string="Pendientes de aprobar"
+                        domain="[('state','=','sent')]"/>
+
+                <filter name="filter_approved"
+                        string="Aprobadas"
+                        domain="[('state','=','approved')]"/>
+
+                <filter name="filter_rejected"
+                        string="Rechazadas"
+                        domain="[('state','=','rejected')]"/>
+
+                <filter name="filter_liquidated"
+                        string="Liquidadas"
+                        domain="[('state','=','liquidated')]"/>
+
+                <separator/>
+
+                <!-- ========================= -->
+                <!-- FECHAS -->
+                <!-- ========================= -->
+                <filter name="filter_today"
+                        string="Hoy"
+                        domain="[('date_request','=',context_today())]"/>
+
+                <filter name="filter_this_month"
+                        string="Este mes"
+                        domain="[
+                            ('date_request','&gt;=', context_today().replace(day=1)),
+                            ('date_request','&lt;=', context_today())
+                        ]"/>
+
+                <separator/>
+
+                <!-- ========================= -->
+                <!-- ARCHIVADO -->
+                <!-- ========================= -->
+                <filter name="filter_active"
+                        string="Activas"
+                        domain="[('active','=',True)]"/>
+
+                <filter name="filter_archived"
+                        string="Archivadas"
+                        domain="[('active','=',False)]"/>
+
+                <filter name="filter_all"
+                        string="Todas"
+                        domain="[]"/>
+
+                <!-- ========================= -->
+                <!-- AGRUPAR -->
+                <!-- ========================= -->
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_state"
+                            string="Estado"
+                            context="{'group_by':'state'}"/>
+
+                    <filter name="group_department"
+                            string="Departamento"
+                            context="{'group_by':'approver_department_id'}"/>
+
+                    <filter name="group_requester"
+                            string="Solicitante"
+                            context="{'group_by':'requester_id'}"/>
+
+                    <filter name="group_date"
+                            string="Fecha"
+                            context="{'group_by':'date_request'}"/>
+                </group>
+
+            </search>
+        </field>
+    </record>
+
+</odoo>

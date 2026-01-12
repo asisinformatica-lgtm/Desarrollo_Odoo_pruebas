@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================= -->
+    <!-- ACCIÓN: PENDIENTES DE APROBAR -->
+    <!-- ============================= -->
+    <record id="action_purchase_advance_to_approve" model="ir.actions.act_window">
+        <field name="name">Pendientes de Aprobar</field>
+        <field name="res_model">purchase.advance</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'sent')]</field>
+        <field name="groups_id" eval="[(4, ref('purchase_advance.group_purchase_advance_approver'))]"/>
+    </record>
+
+    <!-- ============================= -->
+    <!-- ACCIÓN: PENDIENTES DE LIQUIDAR -->
+    <!-- ============================= -->
+    <record id="action_purchase_advance_to_liquidate" model="ir.actions.act_window">
+        <field name="name">Pendientes de Liquidar</field>
+        <field name="res_model">purchase.advance</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'approved')]</field>
+        <field name="groups_id" eval="[(4, ref('purchase_advance.group_purchase_advance_accounting'))]"/>
+    </record>
+
+    <!-- ============================= -->
+    <!-- MENÚ DASHBOARD FINANZAS -->
+    <!-- ============================= -->
+    <menuitem id="menu_purchase_advance_finance_root"
+              name="Finanzas"
+              parent="purchase.menu_purchase_root"
+              groups="purchase_advance.group_purchase_advance_approver,purchase_advance.group_purchase_advance_accounting"
+              sequence="20"/>
+
+    <menuitem id="menu_purchase_advance_to_approve"
+              name="Requisiciones por Aprobar"
+              parent="menu_purchase_advance_finance_root"
+              action="action_purchase_advance_to_approve"
+              sequence="10"/>
+
+    <menuitem id="menu_purchase_advance_to_liquidate"
+              name="Requisiciones por Liquidar"
+              parent="menu_purchase_advance_finance_root"
+              action="action_purchase_advance_to_liquidate"
+              sequence="20"/>
+
+</odoo>

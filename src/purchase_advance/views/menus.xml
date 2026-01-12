@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================= -->
+    <!-- ACCIÓN: HISTORIAL DE REQUISICIONES -->
+    <!-- ================================================= -->
+    <record id="action_purchase_advance_history" model="ir.actions.act_window">
+        <field name="name">Historial de Requisiciones</field>
+        <field name="res_model">purchase.advance</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">
+            {'search_default_groupby_state': 1}
+        </field>
+    </record>
+
+    <!-- ================================================= -->
+    <!-- ACCIÓN: NUEVA REQUISICIÓN -->
+    <!-- ================================================= -->
+    <record id="action_purchase_advance_new" model="ir.actions.act_window">
+        <field name="name">Nueva Requisición</field>
+        <field name="res_model">purchase.advance</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">
+            {'default_state': 'draft'}
+        </field>
+    </record>
+
+    <!-- ================================================= -->
+    <!-- MENÚ PADRE -->
+    <!-- ================================================= -->
+    <menuitem id="menu_purchase_advance_root"
+              name="Requisiciones"
+              parent="purchase.menu_purchase_root"
+              sequence="30"/>
+
+    <!-- ================================================= -->
+    <!-- SUBMENÚ: NUEVA -->
+    <!-- ================================================= -->
+    <menuitem id="menu_purchase_advance_new"
+              name="Nueva Requisición"
+              parent="menu_purchase_advance_root"
+              action="action_purchase_advance_new"
+              sequence="10"/>
+
+    <!-- ================================================= -->
+    <!-- SUBMENÚ: HISTORIAL -->
+    <!-- ================================================= -->
+    <menuitem id="menu_purchase_advance_history"
+              name="Historial"
+              parent="menu_purchase_advance_root"
+              action="action_purchase_advance_history"
+              sequence="20"/>
+
+</odoo>
