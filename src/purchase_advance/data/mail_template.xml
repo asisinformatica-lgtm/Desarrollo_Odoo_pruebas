@@ -8,40 +8,16 @@
         <field name="name">Requisición pendiente de aprobación</field>
         <field name="model_id" ref="model_purchase_advance"/>
 
-        <!-- SUBJECT: UNA SOLA LÍNEA -->
-        <field name="subject">
-            Requisición {{ object.name }} pendiente de aprobación
-        </field>
+        <!-- ⚠️ SUBJECT EN UNA SOLA LÍNEA (OBLIGATORIO) -->
+        <field name="subject">Requisición {{ object.name }} pendiente de aprobación</field>
 
-        <!-- EMAIL FROM (limpio y seguro) -->
-        <field name="email_from">
-            {{ (user.email or company.email or 'no-reply@caribbeanport.com.gt')
-               .replace('\n','')
-               .replace('\r','')
-               .strip() }}
-        </field>
-
-        <!-- EMAIL TO (limpio y seguro) -->
-        <field name="email_to">
-            {{ (object.approver_employee_id.work_email or '')
-               .replace('\n','')
-               .replace('\r','')
-               .strip() }}
-        </field>
-
-        <!-- REPLY TO (definido explícitamente) -->
-        <field name="reply_to">
-            {{ (user.email or company.email or 'no-reply@caribbeanport.com.gt')
-               .replace('\n','')
-               .replace('\r','')
-               .strip() }}
-        </field>
+        <field name="email_from">{{ user.email or 'no-reply@caribbeanport.com.gt' }}</field>
+        <field name="email_to">{{ object.approver_employee_id.work_email }}</field>
 
         <!-- Evita chatter y basura -->
         <field name="use_default_to" eval="False"/>
         <field name="auto_delete" eval="True"/>
 
-        <!-- CUERPO DEL CORREO -->
         <field name="body_html">
             <![CDATA[
             <div style="font-family: Arial, sans-serif; font-size: 14px;">

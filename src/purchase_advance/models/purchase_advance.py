@@ -8,6 +8,7 @@ class PurchaseAdvance(models.Model):
     _description = 'Requisición de Compra'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
+
     # =================================================
     # DATOS GENERALES
     # =================================================
@@ -232,7 +233,7 @@ class PurchaseAdvance(models.Model):
         return f"{base_url}/web#id={self.id}&model=purchase.advance&view_type=form"
 
     # =================================================
-    # ENVÍO DE CORREO (ODOO 18 – CORRECTO)
+    # ENVÍO DE CORREO (FIX DEFINITIVO ODOO 18)
     # =================================================
 
     def _send_approval_email(self):
@@ -248,8 +249,21 @@ class PurchaseAdvance(models.Model):
             if not rec.approver_employee_id or not rec.approver_employee_id.work_email:
                 raise UserError('❌ El aprobador no tiene correo configurado.')
 
+            # 🔒 SUBJECT FORZADO (NO USA EL DEL TEMPLATE)
+            subject = f"Requisición {rec.name} pendiente de aprobación"
+
+            # 🔒 HEADERS LIMPIOS
+            clean_email = (
+                self.env.user.email
+                or self.env.company.email
+                or 'no-reply@caribbeanport.com.gt'
+            ).strip().replace('\n', '').replace('\r', '')
+
             template.with_context(
-                lang=self.env.user.lang
+                subject=subject,
+                email_from=clean_email,
+                reply_to=clean_email,
+                lang=self.env.user.lang,
             ).send_mail(
                 rec.id,
                 force_send=True,
