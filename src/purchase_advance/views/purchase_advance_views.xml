@@ -37,7 +37,12 @@
                 <!-- ========================= -->
                 <header>
 
-                    <!-- ENVIAR: SOLO SOLICITANTE + BORRADOR -->
+                    <button name="action_print"
+                            string="Imprimir"
+                            type="object"
+                            class="btn-primary"
+                            icon="fa-print"/>
+
                     <button name="action_send"
                             type="object"
                             string="Enviar"
@@ -45,7 +50,6 @@
                             groups="purchase_advance.group_purchase_advance_requester"
                             invisible="state != 'draft'"/>
 
-                    <!-- APROBAR: SOLO APROBADOR + ENVIADA -->
                     <button name="action_approve"
                             type="object"
                             string="Aprobar"
@@ -53,7 +57,6 @@
                             groups="purchase_advance.group_purchase_advance_approver"
                             invisible="state != 'sent'"/>
 
-                    <!-- RECHAZAR: SOLO APROBADOR + ENVIADA -->
                     <button name="action_reject"
                             type="object"
                             string="Rechazar"
@@ -61,7 +64,6 @@
                             groups="purchase_advance.group_purchase_advance_approver"
                             invisible="state != 'sent'"/>
 
-                    <!-- LIQUIDAR: CONTABILIDAD -->
                     <button name="action_liquidate"
                             type="object"
                             string="Liquidar"
@@ -82,6 +84,10 @@
                         <group>
                             <field name="name" readonly="1"/>
                             <field name="date_request"/>
+
+                            <!-- ✅ CAMPO AGREGADO -->
+                            <field name="department_id"/>
+
                             <field name="reason"/>
                         </group>
 

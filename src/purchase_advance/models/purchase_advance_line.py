@@ -11,12 +11,10 @@ class PurchaseAdvanceLine(models.Model):
         ondelete='cascade',
         required=True
     )
-    
-    #MONEDA HEREDADA DE LA CABECERA
+
     currency_id = fields.Many2one(
         'res.currency',
-        string='Moneda',
-        related='advance_id_currency_id',
+        related='advance_id.currency_id',
         store=True,
         readonly=True
     )
@@ -37,18 +35,11 @@ class PurchaseAdvanceLine(models.Model):
         default=1.0
     )
 
-    price_unit = fields.Float(
-        string='Precio Unitario'
+    price_unit = fields.Monetary(
+        string='Precio Unitario',
+        currency_field='currency_id'
     )
 
-    currency_id = fields.Many2one(
-        'res.currency',
-        related='advance_id.currency_id',
-        store=True,
-        readonly=True
-    )
-
-    # 🔥 ESTE ERA EL CAMPO QUE FALTABA
     tax_ids = fields.Many2many(
         'account.tax',
         string='Impuestos',
@@ -72,9 +63,16 @@ class PurchaseAdvanceLine(models.Model):
     @api.depends('quantity', 'price_unit')
     def _compute_subtotal(self):
         for line in self:
-            line.subtotal = line.quantity * line.price_unit
+            line.subtotal = (line.quantity or 0.0) * (line.price_unit or 0.0)
 
-    @api.depends('subtotal', 'tax_ids')
+    @api.depends(
+        'subtotal',
+        'tax_ids',
+        'quantity',
+        'price_unit',
+        'product_id',
+        'partner_id'
+    )
     def _compute_total(self):
         for line in self:
             if line.tax_ids:

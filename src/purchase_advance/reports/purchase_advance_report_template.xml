@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_purchase_advance">
+        <t t-call="web.basic_layout">
+            <t t-foreach="docs" t-as="o">
+
+                <style>
+                    header, footer { display:none !important; }
+                    hr { display:none !important; }
+
+                    /* QUITAR ESPACIO SUPERIOR DE ODOO */
+                    .page {
+                        padding-top: 0 !important;
+                        margin-top: 0 !important;
+                    }
+
+                    table { font-size:12px; }
+                </style>
+
+                <!-- ================= MARCA DE AGUA (CENTRADA Y GRANDE) ================= -->
+                <div style="
+                    position: fixed;
+                    top: 24%;
+                    left: 08%;
+                    transform: translate(-50%, -50%);
+                    width: 85%;
+                    opacity: 0.06;
+                    z-index: 0;
+                    text-align: center;">
+                    <img t-if="o.env.company.logo"
+                         t-att-src="'data:image/png;base64,%s' % o.env.company.logo.decode()"
+                         style="width:100%;"/>
+                </div>
+
+                <!-- ================= CONTENIDO ================= -->
+                <main class="page" style="position:relative; z-index:1;">
+
+                    <!-- ================= LOGO SUPERIOR ================= -->
+                    <div style="text-align:left; margin-bottom:2px;">
+                        <img t-if="o.env.company.logo"
+                             t-att-src="'data:image/png;base64,%s' % o.env.company.logo.decode()"
+                             style="max-height:55px;"/>
+                    </div>
+
+                    <!-- ================= ENCABEZADO EMPRESA ================= -->
+                    <div style="
+                        text-align:center;
+                        line-height:1.3;
+                        margin-top:-15mm;
+                        margin-bottom:6px;
+                        font-size:12px;">
+                        <div style="font-size:18px; font-weight:bold;">
+                            GRUPO CARIBBEAN PORT, S.A.
+                        </div>
+                        3ra. calle, Colonia Piedras Negras, calle al bordo, Santo Tomás de Castilla<br/>
+                        Puerto Barrios, Izabal
+                    </div>
+
+                    <!-- ================= TÍTULO ================= -->
+                    <div style="
+                        text-align:center;
+                        font-size:18px;
+                        font-weight:bold;
+                        margin:6px 0 10px 0;">
+                        Requisición de Compra
+                    </div>
+
+                    <!-- ================= DATOS ================= -->
+                    <table width="100%" style="margin-bottom:14px;">
+                        <tr>
+                            <td>
+                                <strong>Número:</strong>
+                                <span t-esc="o.name"/>
+                            </td>
+                            <td style="text-align:right;">
+                                <strong>Fecha:</strong>
+                                <span t-esc="o.date_request"/><br/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Solicitante:</strong>
+                                <span t-esc="o.requester_id.name"/>
+                            </td>
+                            <td style="text-align:right;">
+                                <strong>Departamento:</strong>
+                                <span t-esc="o.department_id.name or '_'"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- ================= DETALLE ================= -->
+                    <table width="100%" cellpadding="6" cellspacing="0"
+                           style="border-collapse:collapse; border:1px solid #333;">
+                        <thead style="background:#f0f0f0;">
+                            <tr>
+                                <th style="border:1px solid #333;">Producto</th>
+                                <th style="border:1px solid #333;">Cantidad</th>
+                                <th style="border:1px solid #333;">Precio Unit.</th>
+                                <th style="border:1px solid #333;">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="o.line_ids" t-as="l">
+                                <tr>
+                                    <td style="border:1px solid #333;">
+                                        <span t-esc="l.product_id.display_name"/>
+                                    </td>
+
+                                    <!-- Cantidad sin decimales -->
+                                    <td style="border:1px solid #333; text-align:right;">
+                                        <span t-esc="int(l.quantity)"/>
+                                    </td>
+
+                                    <!-- Precio Unitario (Q A LA IZQUIERDA) -->
+                                    <td style="border:1px solid #333; text-align:right;">
+                                        Q <t t-esc="'%.2f' % l.price_unit"/>
+                                    </td>
+
+                                    <!-- Subtotal -->
+                                    <td style="border:1px solid #333; text-align:right;">
+                                        Q <t t-esc="'%.2f' % l.subtotal"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <!-- ================= TOTAL ================= -->
+                    <div style="margin-top:14px; text-align:right; font-size:15px;">
+                        <strong>Total:</strong>
+                        Q <t t-esc="'%.2f' % o.amount_total"/>
+                    </div>
+
+                    <!-- ================= ESPACIO ================= -->
+                    <div style="min-height:180px;"></div>
+
+                    <!-- ================= FIRMAS ================= -->
+                    <table width="100%">
+                        <tr>
+                            <td style="text-align:center;">
+                                ___________________________<br/>
+                                <strong>Solicitante</strong><br/>
+                                <span t-esc="o.department_id.name or ''"/>
+                            </td>
+                            <td style="text-align:center;">
+                                ___________________________<br/>
+                                <strong>Aprobador</strong><br/>
+                                Finanzas
+                            </td>
+                        </tr>
+                    </table>
+
+                </main>
+
+            </t>
+        </t>
+    </template>
+
+</odoo>

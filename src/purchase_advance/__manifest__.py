@@ -36,6 +36,8 @@ Permite solicitar, aprobar y controlar requisiciones.
     'views/purchase_advance_search_views.xml',
     'views/menus.xml',                      # 🔹 MENÚ DESPLEGABLE
     'views/purchase_advance_views.xml',     # Formularios y listas
+    'reports/purchase_advance_report_template.xml',
+    'reports/purchase_advance_report.xml',
 ],
     'installable': True,
     'application': False,

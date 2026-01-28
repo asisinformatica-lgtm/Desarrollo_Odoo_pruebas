@@ -8,7 +8,6 @@ class PurchaseAdvance(models.Model):
     _description = 'Requisición de Compra'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-
     # =================================================
     # DATOS GENERALES
     # =================================================
@@ -32,6 +31,14 @@ class PurchaseAdvance(models.Model):
         string='Moneda',
         required=True,
         default=lambda self: self.env.company.currency_id
+    )
+    
+    company_id = fields.Many2one(
+        'res.company',
+        string='Compañia',
+        required=True,
+        default=lambda self: self.env.company,
+        readonly=True
     )
 
     requester_id = fields.Many2one(
@@ -249,10 +256,8 @@ class PurchaseAdvance(models.Model):
             if not rec.approver_employee_id or not rec.approver_employee_id.work_email:
                 raise UserError('❌ El aprobador no tiene correo configurado.')
 
-            # 🔒 SUBJECT FORZADO (NO USA EL DEL TEMPLATE)
             subject = f"Requisición {rec.name} pendiente de aprobación"
 
-            # 🔒 HEADERS LIMPIOS
             clean_email = (
                 self.env.user.email
                 or self.env.company.email
@@ -293,10 +298,7 @@ class PurchaseAdvance(models.Model):
 
             rec._send_approval_email()
 
-            rec.message_post(
-                body='📤 Requisición enviada para aprobación.',
-                message_type='comment'
-            )
+            rec.message_post(body='📤 Requisición enviada para aprobación.')
 
     def action_approve(self):
         for rec in self:
@@ -336,6 +338,16 @@ class PurchaseAdvance(models.Model):
                 'liquidated_date': fields.Datetime.now(),
             })
             rec.message_post(body='💰 Requisición liquidada.')
+
+    # =================================================
+    # IMPRIMIR (FORMA CORRECTA – SIN PARSE ERROR)
+    # =================================================
+
+    def action_print(self):
+        self.ensure_one()
+        return self.env.ref(
+            'purchase_advance.purchase_advance_report'
+        ).report_action(self)
 
     # =================================================
     # ARCHIVAR / RESTAURAR
