@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- ====================================================== -->
+    <!-- ACCIÓN DE REPORTE (SOLO GASTOS NORMALES) -->
+    <!-- ====================================================== -->
+
+    <record id="expense_report_action" model="ir.actions.report">
+        <field name="name">Reporte de Gasto</field>
+        <field name="model">hr.expense</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">caribbean_transport_expenses.expense_report_template</field>
+        <field name="binding_model_id" ref="hr_expense.model_hr_expense"/>
+        <field name="binding_type">report</field>
+        <field name="domain">[('expense_category','!=','financiamiento')]</field>
+    </record>
+
+    <!-- ====================================================== -->
+    <!-- TEMPLATE PDF -->
+    <!-- ====================================================== -->
+
+    <template id="expense_report_template">
+        <t t-call="web.external_layout">
+
+            <main>
+                <t t-foreach="docs" t-as="doc">
+
+                    <div class="page" style="font-size:13px;">
+
+                        <!-- ================= HEADER ================= -->
+
+                        <h2 style="text-align:center; margin-bottom:5px;">
+                            REPORTE DE GASTO
+                        </h2>
+
+                        <p style="text-align:center; margin-top:0;">
+                            Documento interno de gasto
+                        </p>
+
+                        <hr style="margin:15px 0;"/>
+
+                        <!-- ================= INFORMACIÓN GENERAL ================= -->
+
+                        <table style="width:100%; border-collapse:collapse; margin-bottom:20px; font-size:13px;">
+                            <tr style="background-color:#f2f2f2;">
+                                <th colspan="4" style="text-align:left; padding:6px; border:1px solid #000;">
+                                    Información del gasto
+                                </th>
+                            </tr>
+
+                            <tr>
+                                <td style="padding:6px; border:1px solid #000;"><strong>Correlativo</strong></td>
+                                <td style="padding:6px; border:1px solid #000;">
+                                    <t t-esc="doc.expense_sequence"/>
+                                </td>
+
+                                <td style="padding:6px; border:1px solid #000;"><strong>Fecha</strong></td>
+                                <td style="padding:6px; border:1px solid #000;">
+                                    <t t-esc="doc.date"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="padding:6px; border:1px solid #000;"><strong>Empleado</strong></td>
+                                <td style="padding:6px; border:1px solid #000;">
+                                    <t t-esc="doc.employee_id.name"/>
+                                </td>
+
+                                <td style="padding:6px; border:1px solid #000;"><strong>Categoría</strong></td>
+                                <td style="padding:6px; border:1px solid #000;">
+                                    <t t-esc="doc.expense_category"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="padding:6px; border:1px solid #000;"><strong>Descripción</strong></td>
+                                <td colspan="3" style="padding:6px; border:1px solid #000;">
+                                    <t t-esc="doc.name"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- ================= DETALLE DE LÍNEAS ================= -->
+
+                        <t t-if="doc.detail_line_ids">
+
+                            <h4>Detalle del gasto</h4>
+
+                            <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                                <thead style="background-color:#e6e6e6;">
+                                    <tr>
+                                        <th style="border:1px solid #000; padding:5px;">Descripción</th>
+                                        <th style="border:1px solid #000; padding:5px;">Cantidad</th>
+                                        <th style="border:1px solid #000; padding:5px; text-align:right;">Precio Unitario</th>
+                                        <th style="border:1px solid #000; padding:5px; text-align:right;">Subtotal</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <t t-foreach="doc.detail_line_ids" t-as="l">
+                                        <tr>
+                                            <td style="border:1px solid #000; padding:5px;">
+                                                <t t-esc="l.description"/>
+                                            </td>
+                                            <td style="border:1px solid #000; padding:5px; text-align:center;">
+                                                <t t-esc="l.quantity"/>
+                                            </td>
+                                            <td style="border:1px solid #000; padding:5px; text-align:right;">
+                                                <span t-esc="l.unit_price"
+                                                      t-options='{"widget":"monetary","display_currency":doc.currency_id}'/>
+                                            </td>
+                                            <td style="border:1px solid #000; padding:5px; text-align:right;">
+                                                <span t-esc="l.subtotal"
+                                                      t-options='{"widget":"monetary","display_currency":doc.currency_id}'/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+
+                        </t>
+
+                        <!-- ================= TOTAL ================= -->
+
+                        <br/>
+
+                        <div style="text-align:right; font-size:14px;">
+                            <strong>Total del gasto:</strong>
+                            <span t-esc="doc.total_amount"
+                                  t-options='{"widget":"monetary","display_currency":doc.currency_id}'/>
+                        </div>
+
+                        <!-- ================= FIRMAS ================= -->
+
+                        <br/><br/><br/>
+
+                        <table style="width:100%; text-align:center;">
+                            <tr>
+                                <td style="width:50%;">
+                                    ___________________________<br/>
+                                    Firma del Empleado
+                                </td>
+                                <td style="width:50%;">
+                                    ___________________________<br/>
+                                    Autorizado por Gerencia
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+
+                </t>
+            </main>
+
+        </t>
+    </template>
+
+</odoo>

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- ================= REPORTE ================= -->
+
+    <record id="loan_amortization_report" model="ir.actions.report">
+        <field name="name">Tabla de amortización</field>
+        <field name="model">hr.expense</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">caribbean_transport_expenses.loan_report_template</field>
+        <field name="binding_model_id" ref="hr_expense.model_hr_expense"/>
+        <field name="binding_type">report</field>
+        <field name="domain">[('expense_category','=','financiamiento')]</field>
+    </record>
+
+
+    <!-- ================= TEMPLATE ================= -->
+
+    <template id="loan_report_template">
+
+        <t t-call="web.external_layout">
+
+            <main>
+
+                <t t-foreach="docs" t-as="doc">
+
+                    <div class="page">
+
+                        <!-- ENCABEZADO EMPRESA -->
+
+                        <table style="width:100%; margin-bottom:10px;">
+                            <tr>
+                                <td style="width:30%;">
+                                    <img t-if="doc.company_id.logo"
+                                         t-att-src="'data:image/png;base64,%s' % doc.company_id.logo"
+                                         style="max-height:80px;"/>
+                                </td>
+
+                                <td style="width:70%; text-align:right; font-size:12px;">
+                                    <strong>Grupo Caribbean Port S.A.</strong><br/>
+                                    3ra. calle, Colonia Piedras Negras, calle al bordo,<br/>
+                                    Santo Tomas De Castilla<br/>
+                                    Puerto Barrios, Izabal, Guatemala
+                                </td>
+                            </tr>
+                        </table>
+
+                        <hr/>
+
+                        <h2 style="text-align:center;">
+                            REPORTE DE FINANCIAMIENTO
+                        </h2>
+
+                        <p style="text-align:center; font-size:12px;">
+                            Tabla de amortización del préstamo interno
+                        </p>
+
+                        <br/>
+
+                        <!-- INFO PRÉSTAMO -->
+
+                        <table style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+                            <tr style="background:#e6e6e6;">
+                                <th colspan="4" style="border:1px solid #000; padding:6px; text-align:left;">
+                                    Información del préstamo
+                                </th>
+                            </tr>
+
+                            <tr>
+                                <td style="border:1px solid #000; padding:6px;"><strong>Correlativo</strong></td>
+                                <td style="border:1px solid #000; padding:6px;">
+                                    <t t-esc="doc.expense_sequence"/>
+                                </td>
+
+                                <td style="border:1px solid #000; padding:6px;"><strong>Fecha</strong></td>
+                                <td style="border:1px solid #000; padding:6px;">
+                                    <t t-esc="doc.date"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="border:1px solid #000; padding:6px;"><strong>Empleado</strong></td>
+                                <td style="border:1px solid #000; padding:6px;">
+                                    <t t-esc="doc.employee_id.name"/>
+                                </td>
+
+                                <td style="border:1px solid #000; padding:6px;"><strong>Monto</strong></td>
+                                <td style="border:1px solid #000; padding:6px;">
+                                    <span t-esc="doc.loan_amount"
+                                          t-options='{"widget":"monetary","display_currency":doc.currency_id}'/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="border:1px solid #000; padding:6px;"><strong>Plazo</strong></td>
+                                <td style="border:1px solid #000; padding:6px;">
+                                    <t t-esc="doc.loan_term"/> cuotas
+                                </td>
+
+                                <td style="border:1px solid #000; padding:6px;"><strong>Intereses Totales</strong></td>
+                                <td style="border:1px solid #000; padding:6px;">
+                                    <span t-esc="doc.total_interest_amount"
+                                          t-options='{"widget":"monetary","display_currency":doc.currency_id}'/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- TABLA CUOTAS -->
+
+                        <h4>Detalle de cuotas</h4>
+
+                        <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                            <thead style="background:#e6e6e6;">
+                                <tr>
+                                    <th style="border:1px solid #000; padding:5px;">Cuota</th>
+                                    <th style="border:1px solid #000; padding:5px;">Fecha</th>
+                                    <th style="border:1px solid #000; padding:5px;">Capital</th>
+                                    <th style="border:1px solid #000; padding:5px;">Interés</th>
+                                    <th style="border:1px solid #000; padding:5px;">Total</th>
+                                    <th style="border:1px solid #000; padding:5px;">Saldo</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <t t-foreach="doc.amortization_line_ids.sorted('installment_number')" t-as="l">
+                                    <tr>
+                                        <td style="border:1px solid #000; padding:5px; text-align:center;">
+                                            <t t-esc="l.installment_number"/>
+                                        </td>
+                                        <td style="border:1px solid #000; padding:5px; text-align:center;">
+                                            <t t-esc="l.date"/>
+                                        </td>
+                                        <td style="border:1px solid #000; padding:5px; text-align:right;">
+                                            <span t-esc="l.capital_amount"
+                                                  t-options='{"widget":"monetary","display_currency":doc.currency_id}'/>
+                                        </td>
+                                        <td style="border:1px solid #000; padding:5px; text-align:right;">
+                                            <span t-esc="l.interest_amount"
+                                                  t-options='{"widget":"monetary","display_currency":doc.currency_id}'/>
+                                        </td>
+                                        <td style="border:1px solid #000; padding:5px; text-align:right;">
+                                            <span t-esc="l.total_amount"
+                                                  t-options='{"widget":"monetary","display_currency":doc.currency_id}'/>
+                                        </td>
+                                        <td style="border:1px solid #000; padding:5px; text-align:right;">
+                                            <span t-esc="l.remaining_balance"
+                                                  t-options='{"widget":"monetary","display_currency":doc.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </t>
+
+            </main>
+
+        </t>
+
+    </template>
+
+</odoo>

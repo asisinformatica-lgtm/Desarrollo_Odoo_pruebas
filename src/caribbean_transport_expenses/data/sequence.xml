@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Secuencia base para correlativos de gastos -->
+    <record id="seq_caribbean_transport_expense" model="ir.sequence">
+        <field name="name">Gasto Transporte Caribbean</field>
+        <field name="code">caribbean.transport.expense</field>
+
+        <!-- Sin prefijo porque lo armamos dinámicamente -->
+        <field name="prefix"></field>
+
+        <!-- 5 dígitos: 00001 -->
+        <field name="padding">5</field>
+
+        <!-- Global para todas las compañías -->
+        <field name="company_id" eval="False"/>
+
+        <!-- Sin reinicio automático -->
+        <field name="implementation">no_gap</field>
+    </record>
+
+</odoo>

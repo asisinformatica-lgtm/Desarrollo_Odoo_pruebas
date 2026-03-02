@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ===================================================== -->
+    <!-- LIST VIEW PARA LÍNEAS DE DETALLE -->
+    <!-- ===================================================== -->
+    <record id="hr_expense_detail_line_list" model="ir.ui.view">
+        <field name="name">hr.expense.detail.line.list</field>
+        <field name="model">hr.expense.detail.line</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="supplier_id"/>
+                <field name="description"/>
+                <field name="quantity"/>
+                <field name="unit_price"/>
+                <field name="subtotal" readonly="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ===================================================== -->
+    <!-- FORM VIEW PARA LÍNEAS -->
+    <!-- ===================================================== -->
+    <record id="hr_expense_detail_line_form" model="ir.ui.view">
+        <field name="name">hr.expense.detail.line.form</field>
+        <field name="model">hr.expense.detail.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="supplier_id"/>
+                    <field name="description"/>
+                    <field name="quantity"/>
+                    <field name="unit_price"/>
+                    <field name="subtotal" readonly="1"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <!-- ===================================================== -->
+    <!-- LIST VIEW AMORTIZACIÓN (NUEVA) -->
+    <!-- ===================================================== -->
+    <record id="hr_expense_amortization_line_list" model="ir.ui.view">
+        <field name="name">hr.expense.amortization.line.list</field>
+        <field name="model">hr.expense.amortization.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="installment_number" string="Cuota"/>
+                <field name="date" string="Fecha"/>
+                <field name="capital_amount" string="Capital"/>
+                <field name="interest_amount" string="Interés"/>
+                <field name="total_amount" string="Total cuota"/>
+                <field name="remaining_balance" string="Saldo"/>
+                <field name="paid" string="Pagada"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ===================================================== -->
+    <!-- FORM HR EXPENSE -->
+    <!-- ===================================================== -->
+    <record id="hr_expense_form_caribbean" model="ir.ui.view">
+        <field name="name">hr.expense.form.caribbean</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//sheet" position="inside">
+
+                <!-- ================= CORRELATIVO ================= -->
+                <group>
+                    <field name="expense_sequence" readonly="1"/>
+                    <field name="name"/>
+                </group>
+
+                <!-- ================= CATEGORÍA ================= -->
+                <group>
+                    <field name="expense_category"/>
+                </group>
+
+                <!-- ================= OPERATIVOS ================= -->
+                <group string="Gastos Operativos"
+                       invisible="expense_category != 'operativo'">
+
+                    <group col="2">
+                        <field name="vehicle_id"
+                               options="{'no_create': True}"/>
+                        <field name="vehicle_plate"
+                               readonly="1"/>
+                    </group>
+
+                    <field name="operative_expense"/>
+
+                    <field name="detail_line_ids"
+                           nolabel="1"
+                           mode="list,form"/>
+                </group>
+
+                <!-- ================= ADMINISTRATIVOS ================= -->
+                <group string="Gastos Administrativos"
+                       invisible="expense_category != 'administrativo'">
+
+                    <field name="admin_expense"/>
+
+                    <field name="detail_line_ids"
+                           nolabel="1"
+                           mode="list,form"
+                           invisible="admin_expense in ('energia','alquiler','internet')"/>
+
+                    <field name="name"
+                           string="Notas"
+                           invisible="admin_expense not in ('energia','alquiler','internet')"/>
+                </group>
+
+                <!-- ================= LEGALES ================= -->
+                <group string="Gastos Legales"
+                       invisible="expense_category != 'legal'">
+
+                    <field name="legal_expense"/>
+                    <field name="name" string="Notas"/>
+                </group>
+
+                <!-- ================= TOTAL DINÁMICO ================= -->
+
+                <group invisible="expense_category == 'financiamiento' or not detail_line_ids">
+                    <field name="detail_total" readonly="1"/>
+                </group>
+
+                <group invisible="expense_category == 'financiamiento' or detail_line_ids">
+                    <field name="total_amount"/>
+                </group>
+
+                <!-- ================= FINANCIAMIENTO ================= -->
+                <group string="Financiamiento Interno"
+                       invisible="expense_category != 'financiamiento'">
+
+                    <group col="2">
+                        <field name="loan_amount"/>
+                        <field name="loan_term"/>
+                    </group>
+
+                    <group col="2">
+                        <field name="loan_interest"/>
+                        <field name="annual_interest_rate"
+                               invisible="not loan_interest"/>
+                    </group>
+
+                    <group col="2">
+                        <field name="total_interest_amount" readonly="1"/>
+                        <field name="remaining_loan_balance" readonly="1"/>
+                    </group>
+
+                    <group col="2">
+                        <field name="extra_payment_amount"/>
+
+                        <button name="action_apply_extra_payment"
+                                type="object"
+                                string="Aplicar abono"
+                                class="btn-primary"
+                                invisible="extra_payment_amount &lt;= 0"/>
+                    </group>
+                </group>
+
+                <!-- ================= TABLA AMORTIZACIÓN ================= -->
+                <group string="Tabla de amortización"
+                       invisible="expense_category != 'financiamiento'">
+
+                    <field name="amortization_line_ids"
+                           nolabel="1"
+                           mode="list"
+                           options="{'no_create': True, 'no_delete': True, 'no_open': True}"/>
+                </group>
+
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>
